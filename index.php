@@ -1,6 +1,6 @@
 <?php 
 	
-	class Man { // base class
+	class Man { // base class for Doctor and Pacient
 		private $firstName;
 		private $lastName;
 
@@ -49,7 +49,7 @@
 		}	 
 	} // end of Doctor
 
-	// Pacient has first name, last name, identification number and examination mnumber
+	// Pacient has first name, last name, identification number and examination ssnumber
 	class Pacient extends Man {
 		public $idNumber; // personal identification number
 		public $cardNumber; // medical examination number
@@ -88,7 +88,7 @@
 	} // end of Pacient
 
 
-	class Examination { // base class
+	class Examination { // base class for Examinations
 		private $exDate;
 		private $exTime;
 		private $pacient;
