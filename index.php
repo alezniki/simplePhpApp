@@ -1,6 +1,6 @@
 <?php 
 	
-	class Man { // base klasa
+	class Man { // base class
 		private $firstName;
 		private $lastName;
 
@@ -25,14 +25,14 @@
 		}
 	} // end of Man
 
-	// Zakazi pregled
+	// Schedule examination
 	interface RegisterExamination {
-		public function scheduleExamination($pacient, $pregled);
+		public function scheduleExamination($pacient, $exam);
 	}
 
-
+	// Doctor has first name, last name and speciality
 	class Doctor extends Man implements RegisterExamination {
-		public $speciality; // specijalnost
+		public $speciality;
 
 		public $pacients = array();
 
@@ -44,18 +44,18 @@
 			return $this->speciality;
 		}
 
-		public function scheduleExamination($pacient, $pregled){  
-			$pregled->pacient = $pacient;
+		public function scheduleExamination($pacient, $exam){  
+			$exam->pacient = $pacient;
 		}	 
 	} // end of Doctor
 
-	
+	// Pacient has first name, last name, identification number and examination mnumber
 	class Pacient extends Man {
-		public $idNumber; // jmbg
-		public $cardNumber; // broj zdrastvenog kartona
+		public $idNumber; // personal identification number
+		public $cardNumber; // medical examination number
 
 		public $doctor;
-		public $pregledi = array();
+		public $examinations = array();
 
 
 		public function setIdNumber($id) {
@@ -82,13 +82,13 @@
 			return $this->doctor;
 		}
 
-		public function doTest($pregled) {
-			return $pregled->getResults();
+		public function doTest($exam) {
+			return $exam->getResults();
 		}
 	} // end of Pacient
 
 
-	class Examination { // base klasa
+	class Examination { // base class
 		private $exDate;
 		private $exTime;
 		private $pacient;
@@ -101,15 +101,15 @@
 		}
 
 		public function setPacient($pacient){
-			$this->pacient = $pacient; // 95.
+			$this->pacient = $pacient;
 		}
 
 		public function getPacient(){
 			return $this->pacient;
 		}
 
-		public function setExDate($datum){
-			$this->exDate = $datum;
+		public function setExDate($dateOfEx){
+			$this->exDate = $dateOfEx;
 
 		}
 
@@ -117,8 +117,8 @@
 			return $this->exDate;
 		}
 
-		public function setExTime($vreme) {
-			$this->exTime = $vreme;
+		public function setExTime($timeOfEx) {
+			$this->exTime = $timeOfEx;
 		}
 
 		public function getExTime() {
@@ -127,77 +127,79 @@
 
 	} // end of Examination
 
-	// Laboratorijski pregled
+	// Laboratory exam
 	interface LabExamination {
 		public function getResults();
 	}
 
-	// Krvni Pritisak
+	// Blood Pressure
 	class BloodPressure extends Examination implements LabExamination {
-		public $high; // gornja vrednost
-		public $low;  // donja vrednost
-		public $rate; // puls
+		public $high; // high blood pressure
+		public $low;  // high blood pressure
+		public $rate; // heart rate
 
 		public function getResults() {
-			$results = "Vrsta pregleda: " . $this->title . "<br/>Pacijent: " . $this->pacient->getFirstName() . "<br/> Gornja Vrednost: " . $this->high . "<br/> Donja vrednost: " . $this->low . "<br/> Puls: " . $this->rate  . "<br/>";	
+			$results = "Type of Examination: " . $this->title . "<br/>Pacient: " . $this->pacient->getFirstName() . "<br/> Hypertension value: " . $this->high . "<br/> Hypotension value: " . $this->low . "<br/> Heart rate: " . $this->rate  . "<br/>";	
 			return $results;	
 		}
 
 	} // end of BloodPressure
 
-	// Nivo secera u krvi
+	// Sugar level
 	class BloodSugarLevel extends Examination implements LabExamination {
-		public $level; // vrednost
-		public $lastMealTime; // vreme poslednje obroka
+		public $level; // level
+		public $lastMealTime; // time of last meal
 
 		public function getResults(){ 
-			$results = "Vrsta pregleda: " . $this->title . "<br/>Pacijent: " . $this->pacient->getFirstName() . "<br/> Vrednost: " . $this->level . "<br/> Vreme poslednjeg obroka: " . $this->lastMealTime  . "<br/>";
+			$results = "Type of Examination: " . $this->title . "<br/>Pacient: " . $this->pacient->getFirstName() . "<br/> Level: " . $this->level . "<br/> Time of last meal: " . $this->lastMealTime  . "<br/>";
 			return  $results;
 		}
 	} // end of BloodSugarLevel
 
-	// Nivo holesterola u krvi
+	// Cholesterol level
 	class BloodCholesterolLevel extends Examination implements LabExamination {
-		public $level; // vrednost
-		public $lastMealTime; // vreme poslednje obroka
+		public $level;  // level
+		public $lastMealTime; // time of last meal
 
 		public function getResults(){ 
-			$results = "Vrsta Pregleda: " . $this->title . "<br/>Pacijent: " . $this->pacient->getFirstName() . "<br/> Vrednost: " . $this->level . "<br/> Vreme poslednjeg obroka: " . $this->lastMealTime . "<br/>";
+			$results = "Type of Examination: " . $this->title . "<br/>Pacient: " . $this->pacient->getFirstName() . "<br/> Level: " . $this->level . "<br/> Time of last meal: " . $this->lastMealTime . "<br/>";
 			return  $results;
 		}
 	} // end of BloodCholesterolLevel
 
-	// 1.
+	// 1.Create Doctor, for Example "Milan"
 	$milan = new Doctor("Milan");
-	// 2.
+
+	// 2.Create Pacient, for Example "Dragan"
 	$dragan = new Pacient("Dragan");
-	// 3.
+	
+	//  3.Pacient "Dragan" can choose doctor "Milan"
 	$dragan -> setDoctor($milan);
  	
- 	// 4.
- 	$pregled = new BloodSugarLevel("Nivo Secera", "19/08/2016","11:00");
- 	$pregled->level = (double) 4.5;
- 	$pregled->lastMealTime = "20:00";
+ 	// 4.Doctor "Milan" appoints blood pressure examination for pacient "Dragan"
+ 	$exam = new BloodSugarLevel("Sugar Level", "19/08/2016","11:00");
+ 	$exam->level = (double) 4.5;
+ 	$exam->lastMealTime = "20:00";
 
- 	$milan -> scheduleExamination($dragan, $pregled);
+ 	$milan -> scheduleExamination($dragan, $exam);
 	
 
- 	// 5.
-	$pregled2 = new BloodPressure("Krvni Pritisak","20/08/2016","12:00");
-	$pregled2->high = (int) 120;
-	$pregled2->low = (int) 70;
-	$pregled2->rate = (int) 37;
+ 	// 5.Doctor "Milan" appoints blood sugar level examination for pacient "Dragan"
+	$exam2 = new BloodPressure("Blood Pressure","20/08/2016","12:00");
+	$exam2->high = (int) 120;
+	$exam2->low = (int) 70;
+	$exam2->rate = (int) 37;
 
 
- 	$milan->scheduleExamination($dragan, $pregled2);
+ 	$milan->scheduleExamination($dragan, $exam2);
 
- 	// 6.
- 	$testResult = $dragan->doTest($pregled);
+ 	// 6.Pacient "Dragan" takes blood sugar level examination
+ 	$testResult = $dragan->doTest($exam);
  	echo $testResult;
 
  	echo "<br/>";
- 	// 7.
- 	$testResult1 = $dragan->doTest($pregled2);
+ 	// 7.Pacient "Dragan" takes blood pressure examination
+ 	$testResult1 = $dragan->doTest($exam2);
  	echo $testResult1;
 
 
